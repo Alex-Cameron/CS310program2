@@ -46,56 +46,6 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return contains(key, root);
     }
 
-    @Override
-    public boolean add(K key, V value) {
-        return false;
-    }
-
-    @Override
-    public V delete(K key) {
-        return null;
-    }
-
-    @Override
-    public V getValue(K key) {
-        return null;
-    }
-
-    @Override
-    public K getKey(V value) {
-        return null;
-    }
-
-    @Override
-    public Iterable<K> getKeys(V value) {
-        return null;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public Iterable<K> keyset() {
-        return null;
-    }
-
-    @Override
-    public Iterable<V> values() {
-        return null;
-    }
-
     public boolean contains(K key, MapNode node) {
         int comparedVal = node.contents.key.compareTo(key);
         if (comparedVal == 0) {
@@ -114,10 +64,10 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
             }
         }
     }
-}/*
+
     @Override
-    /*
-    Need to return false under correct conditions
+
+    //Need to return false under correct conditions
 
     public boolean add(K key, V value) {
         MapNode cur = root;
@@ -291,4 +241,3 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
             return tot;
     }
 }
-*/
