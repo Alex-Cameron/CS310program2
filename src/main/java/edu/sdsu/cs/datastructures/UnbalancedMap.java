@@ -81,36 +81,62 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
             root = newNode;
             return true;
         }
+        return add(newNode, root);
 
-        int destination = -1;
-        while(destination == -1){
-            //System.out.println(cur.contents.value + " : " + value + "  :  " + cur.contents.compareTo(newVal));
-            if(cur.contents.compareTo(newVal) > 0){
-                if(cur.left != null) {
-                    cur = cur.left;
-                } else {
-                    destination = 1;
-                }
-            } else if (cur.contents.compareTo(newVal) < 0) {
-                if(cur.right != null) {
-                    cur = cur.right;
-                } else {
-                    destination = 2;
-                }
-            } else {
-                destination = 3;
-            }
+//        int destination = -1;
+//        while(destination == -1){
+//            //System.out.println(cur.contents.value + " : " + value + "  :  " + cur.contents.compareTo(newVal));
+//            if(cur.contents.compareTo(newVal) > 0){
+//                if(cur.left != null) {
+//                    cur = cur.left;
+//                } else {
+//                    destination = 1;
+//                }
+//            } else if (cur.contents.compareTo(newVal) < 0) {
+//                if(cur.right != null) {
+//                    cur = cur.right;
+//                } else {
+//                    destination = 2;
+//                }
+//            } else {
+//                destination = 3;
+//            }
+//        }
+//
+//        if(destination == 1){
+//            cur.left = newNode;
+//        } else if(destination == 2){
+//            cur.right = newNode;
+//        } else {
+//            return false;
+//        }
+//
+//        return true;
+    }
+
+    public boolean add(MapNode node, MapNode parent){
+        if(parent == null || node == null){
+            return false;
         }
+        int eval = node.contents.key.compareTo(parent.contents.key);
+        if(eval < 0){
+            if(parent.left == null){
+                parent.left = node;
+                return true;
+            } else {
+                return add(node, parent.left);
+            }
 
-        if(destination == 1){
-            cur.left = newNode;
-        } else if(destination == 2){
-            cur.right = newNode;
+        } else if(eval > 0){
+            if(parent.right == null){
+                parent.right = node;
+                return true;
+            } else {
+                return add(node, parent.right);
+            }
         } else {
             return false;
         }
-
-        return true;
     }
 
 
@@ -183,25 +209,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
 
     @Override
     public K getKey(V value) {
-            return getKey(value, root);
-    }
-
-    public K getKey(V value, MapNode node) {
-        if(node == null){
-            return null;
-        }
-        if(node.contents.value == value){
-            return node.contents.key;
-        }
-        K leftKey = getKey(value, node.left);
-        if(leftKey != null){
-            return leftKey;
-        }
-        K rightKey = getKey(value, node.right);
-        if(rightKey != null){
-            return rightKey;
-        }
-        return null;
+            return getKeys(value, root).getFirst();
     }
 
     @Override
@@ -259,21 +267,21 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
     public Iterable<K> keyset() {
         return keyset(root);
     }
-        public List<K> keyset(MapNode node){
-            List<K> tot = new LinkedList<K>();
-            if(node == null){
-                return tot;
-            }
-            if(node.left != null){
-                tot.addAll(keyset(node.left));
-            }
-            if(node.contents != null){
-                tot.add(node.contents.key);
-            }
-            if(node.right != null){
-                tot.addAll(keyset(node.right));
-            }
+    public LinkedList<K> keyset(MapNode node){
+        LinkedList<K> tot = new LinkedList<K>();
+        if(node == null){
             return tot;
+        }
+        if(node.left != null){
+            tot.addAll(keyset(node.left));
+        }
+        if(node.contents != null){
+            tot.add(node.contents.key);
+        }
+        if(node.right != null){
+            tot.addAll(keyset(node.right));
+        }
+        return tot;
     }
 
     @Override
