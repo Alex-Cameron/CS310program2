@@ -46,7 +46,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return contains(key, root);
     }
 
-    public boolean contains(K key, MapNode node) {
+    private boolean contains(K key, MapNode node) {
         int comparedVal = node.contents.key.compareTo(key);
         if (comparedVal == 0) {
             return true;
@@ -66,9 +66,6 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
     }
 
     @Override
-
-    //Need to return false under correct conditions
-
     public boolean add(K key, V value) {
         MapNode cur = root;
         MapEntry newVal = new MapEntry();
@@ -83,38 +80,9 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         }
         return add(newNode, root);
 
-//        int destination = -1;
-//        while(destination == -1){
-//            //System.out.println(cur.contents.value + " : " + value + "  :  " + cur.contents.compareTo(newVal));
-//            if(cur.contents.compareTo(newVal) > 0){
-//                if(cur.left != null) {
-//                    cur = cur.left;
-//                } else {
-//                    destination = 1;
-//                }
-//            } else if (cur.contents.compareTo(newVal) < 0) {
-//                if(cur.right != null) {
-//                    cur = cur.right;
-//                } else {
-//                    destination = 2;
-//                }
-//            } else {
-//                destination = 3;
-//            }
-//        }
-//
-//        if(destination == 1){
-//            cur.left = newNode;
-//        } else if(destination == 2){
-//            cur.right = newNode;
-//        } else {
-//            return false;
-//        }
-//
-//        return true;
     }
 
-    public boolean add(MapNode node, MapNode parent){
+    private boolean add(MapNode node, MapNode parent){
         if(parent == null || node == null){
             return false;
         }
@@ -151,7 +119,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return oldVal;
     }
 
-    public MapNode delete(K key, MapNode node){
+    private MapNode delete(K key, MapNode node){
         if(node == null){
             return null;
         }
@@ -178,7 +146,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return getValue(key, root);
     }
 
-    public V getValue(K key, MapNode node){
+    private V getValue(K key, MapNode node){
         if(node == null){
             return null;
         }
@@ -200,7 +168,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         }
     }
 
-    public MapNode getMin(MapNode node){
+    private MapNode getMin(MapNode node){
         if(node.left == null){
             return node;
         }
@@ -209,7 +177,11 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
 
     @Override
     public K getKey(V value) {
-            return getKeys(value, root).getFirst();
+        LinkedList<K> keys = getKeys(value, root);
+        if(keys.isEmpty()){
+            return null;
+        }
+        return keys.getFirst();
     }
 
     @Override
@@ -217,8 +189,11 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return getKeys(value, root);
     }
 
-    public LinkedList<K> getKeys(V value, MapNode node){
+    private LinkedList<K> getKeys(V value, MapNode node){
         LinkedList<K> toReturn = new LinkedList<K>();
+        if(node == null){
+            return toReturn;
+        }
         if(node.left != null){
             toReturn.addAll(getKeys(value, node.left));
         }
@@ -236,16 +211,15 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return size(root);
     }
 
-    public int size(MapNode node){
+    private int size(MapNode node){
         int tot = 0;
         if(node == null){
             return 0;
+        } else {
+            tot++;
         }
         if(node.left != null){
             tot += size(node.left);
-        }
-        if(node != null){
-            tot += 1;
         }
         if(node.right != null){
             tot += size(node.right);
@@ -267,7 +241,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
     public Iterable<K> keyset() {
         return keyset(root);
     }
-    public LinkedList<K> keyset(MapNode node){
+    private LinkedList<K> keyset(MapNode node){
         LinkedList<K> tot = new LinkedList<K>();
         if(node == null){
             return tot;
@@ -289,20 +263,20 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
         return values(root);
     }
 
-        public List<V> values(MapNode node){
-            List<V> tot = new LinkedList<V>();
-            if(node == null){
-                return tot;
-            }
-            if(node.left != null){
-             tot.addAll(values(node.left));
-            }
-            if(node.contents != null){
-               tot.add(node.contents.value);
-            }
-            if(node.right != null){
-                tot.addAll(values(node.right));
-            }
+    private List<V> values(MapNode node){
+        List<V> tot = new LinkedList<V>();
+        if(node == null){
             return tot;
+        }
+        if(node.left != null){
+         tot.addAll(values(node.left));
+        }
+        if(node.contents != null){
+           tot.add(node.contents.value);
+        }
+        if(node.right != null){
+            tot.addAll(values(node.right));
+        }
+        return tot;
     }
 }
