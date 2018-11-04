@@ -212,7 +212,7 @@ public class UnbalancedMap<K extends Comparable<K>, V> implements IMap<K, V> {
     public LinkedList<K> getKeys(V value, MapNode node){
         LinkedList<K> toReturn = new LinkedList<K>();
         if(node.left != null){
-            toReturn.addAll(getKeys(value, node.right));
+            toReturn.addAll(getKeys(value, node.left));
         }
         if(node != null && node.contents.value.equals(value)){
             toReturn.add(node.contents.key);
